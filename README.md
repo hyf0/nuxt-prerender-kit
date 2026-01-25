@@ -37,21 +37,21 @@ const data = await useBuildAsyncData('my-key', async () => {
    useBuildAsyncData('key', handler)
 
    // After
-   useBuildAsyncData('key', import.meta.prerender ? handler : __neverReachable)
+   useBuildAsyncData('key', import.meta.prerender ? handler : __neverReachable_ssg())
    ```
 
 2. **Prerender (SSG) context**: During build-time prerendering, `import.meta.prerender` is `true` → handler executes and fetches data
 
 3. **Client bundle**: `import.meta.prerender` is **statically replaced** with `false` at compile time. This enables Dead Code Elimination (DCE) — the handler branch is completely removed from the client bundle. With dynamic imports inside the handler, all server code is tree-shaken.
 
-4. **SSR context (wrong usage)**: In the server bundle, `import.meta.prerender` is a **runtime value** set by Nitro. It's `true` during prerender but `false` during SSR requests. If someone accidentally uses `useBuildAsyncData` on an SSR page, `__neverReachable` throws an error indicating the module is for SSG only.
+4. **SSR context (wrong usage)**: In the server bundle, `import.meta.prerender` is a **runtime value** set by Nitro. It's `true` during prerender but `false` during SSR requests. If someone accidentally uses `useBuildAsyncData` on an SSR page, `__neverReachable_ssg()` throws an error indicating the module is for SSG only.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Transformed Code                                           │
 │  useBuildAsyncData('key', import.meta.prerender             │
 │    ? handler                                                │
-│    : __neverReachable)                                      │
+│    : __neverReachable_ssg())                                │
 └─────────────────────────────────────────────────────────────┘
                               │
           ┌───────────────────┼───────────────────┐
@@ -134,19 +134,6 @@ const items = await useBuildAsyncData(
     return Server.getAllItems()
   },
   { transform: (data) => data.items },
-)
-```
-
-### `neverReachable`
-
-Placeholder function for manual usage when transform is disabled. Throws an error if called.
-
-```typescript
-import { neverReachable } from 'nuxt-ssg'
-
-useBuildAsyncData(
-  'key',
-  import.meta.prerender ? handler : neverReachable(),
 )
 ```
 
