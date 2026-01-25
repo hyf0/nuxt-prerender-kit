@@ -33,6 +33,9 @@ importers:
       '@nuxt/test-utils':
         specifier: ^3.23.0
         version: 3.23.0(@vue/test-utils@2.4.6)(happy-dom@17.6.3)(magicast@0.5.1)(playwright-core@1.58.0)(typescript@5.9.3)(vitest@3.2.4(@types/node@25.0.10)(happy-dom@17.6.3)(jiti@2.6.1)(terser@5.46.0)(yaml@2.8.2))
+      '@types/estree':
+        specifier: ^1.0.8
+        version: 1.0.8
       '@types/node':
         specifier: latest
         version: 25.0.10
@@ -54,6 +57,9 @@ importers:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(terser@5.46.0)(yaml@2.8.2)
       vitest:
         specifier: ^3.2.0
         version: 3.2.4(@types/node@25.0.10)(happy-dom@17.6.3)(jiti@2.6.1)(terser@5.46.0)(yaml@2.8.2)

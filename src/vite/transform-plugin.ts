@@ -1,14 +1,9 @@
 import type { Plugin } from 'vite'
 import type { Node, CallExpression, Identifier } from 'estree'
-import { createFilter, type FilterPattern } from '@rollup/pluginutils'
+import { createFilter } from '@rollup/pluginutils'
 import { parse } from '@babel/parser'
 import { walk } from 'estree-walker'
 import MagicString from 'magic-string'
-
-export interface TransformPluginOptions {
-  include?: FilterPattern
-  exclude?: FilterPattern
-}
 
 const IMPORT_STATEMENT =
   "import { __neverReachable as __neverReachable_ssg } from '#nuxt-ssg/runtime';\n"
@@ -22,11 +17,8 @@ const IMPORT_STATEMENT =
  * 2. Dead code elimination of the handler in client bundles
  * 3. Runtime errors if accidentally used in SSR/CSR context
  */
-export function ssgTransformPlugin(options: TransformPluginOptions = {}): Plugin {
-  const filter = createFilter(
-    options.include ?? ['**/*.ts', '**/*.vue'],
-    options.exclude ?? ['node_modules/**'],
-  )
+export function ssgTransformPlugin(): Plugin {
+  const filter = createFilter(['**/*.ts', '**/*.vue', '**/*.tsx', '**/*.jsx'], ['node_modules/**'])
 
   return {
     name: 'nuxt-ssg-transform',
@@ -81,7 +73,7 @@ function performTransformation(
   try {
     const babelAst = parse(code, {
       sourceType: 'module',
-      plugins: ['typescript'],
+      plugins: ['typescript', 'jsx'],
     })
     // Babel's Program node is compatible with estree for our purposes
     ast = babelAst.program as unknown as Node
@@ -123,7 +115,7 @@ function performTransformation(
       const handlerSource = code.slice(handlerStart, handlerEnd)
 
       // Wrap the handler: import.meta.prerender ? handler : __neverReachable_ssg
-      const wrappedHandler = `import.meta.prerender ? ${handlerSource} : __neverReachable_ssg`
+      const wrappedHandler = `import.meta.prerender ? ${handlerSource} : __neverReachable_ssg()`
 
       s.overwrite(handlerStart, handlerEnd, wrappedHandler)
       needsImport = true

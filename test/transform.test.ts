@@ -10,7 +10,7 @@ describe('transform plugin', () => {
 
     expect(result?.code).toMatchInlineSnapshot(`
       "import { __neverReachable as __neverReachable_ssg } from '#nuxt-ssg/runtime';
-      useBuildAsyncData('key', false ? async () => { return 1 } : __neverReachable_ssg)"
+      useBuildAsyncData('key', false ? async () => { return 1 } : __neverReachable_ssg())"
     `)
   })
 
@@ -20,7 +20,7 @@ describe('transform plugin', () => {
 
     expect(result?.code).toMatchInlineSnapshot(`
       "import { __neverReachable as __neverReachable_ssg } from '#nuxt-ssg/runtime';
-      useBuildAsyncData('key', false ? fn : __neverReachable_ssg, { transform: x => x })"
+      useBuildAsyncData('key', false ? fn : __neverReachable_ssg(), { transform: x => x })"
     `)
   })
 
@@ -29,5 +29,15 @@ describe('transform plugin', () => {
     const result = plugin.transform(code, 'test.ts')
 
     expect(result).toBeNull()
+  })
+
+  it('transforms TSX files with JSX syntax', () => {
+    const code = `useBuildAsyncData('key', async () => { return <div>Hello</div> })`
+    const result = plugin.transform(code, 'test.tsx')
+
+    expect(result?.code).toMatchInlineSnapshot(`
+      "import { __neverReachable as __neverReachable_ssg } from '#nuxt-ssg/runtime';
+      useBuildAsyncData('key', false ? async () => { return <div>Hello</div> } : __neverReachable_ssg())"
+    `)
   })
 })

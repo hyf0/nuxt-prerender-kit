@@ -61,5 +61,5 @@ export async function useBuildAsyncData<T, TransformResult = T>(
     )
   }
 
-  return ret.data.value
+  return ret.data.value as TransformResult
 }

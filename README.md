@@ -40,11 +40,11 @@ const data = await useBuildAsyncData('my-key', async () => {
    useBuildAsyncData('key', import.meta.prerender ? handler : __neverReachable)
    ```
 
-2. **Prerender (SSG) context**: `import.meta.prerender` is `true` → handler executes and fetches data
+2. **Prerender (SSG) context**: During build-time prerendering, `import.meta.prerender` is `true` → handler executes and fetches data
 
-3. **Client bundle**: `import.meta.prerender` is `false` → the handler branch is removed by Dead Code Elimination (DCE). With dynamic imports inside the handler, all server code is tree-shaken.
+3. **Client bundle**: `import.meta.prerender` is **statically replaced** with `false` at compile time. This enables Dead Code Elimination (DCE) — the handler branch is completely removed from the client bundle. With dynamic imports inside the handler, all server code is tree-shaken.
 
-4. **SSR/CSR context (wrong usage)**: If someone accidentally uses this on a page that's server-rendered (SSR) or client-rendered instead of prerendered, `import.meta.prerender` is `false` at runtime → `__neverReachable` throws an error indicating wrong render context.
+4. **SSR context (wrong usage)**: In the server bundle, `import.meta.prerender` is a **runtime value** set by Nitro. It's `true` during prerender but `false` during SSR requests. If someone accidentally uses `useBuildAsyncData` on an SSR page, `__neverReachable` throws an error indicating the module is for SSG only.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -74,14 +74,11 @@ const data = await useBuildAsyncData('my-key', async () => {
 
 ## Configuration
 
+The module works out of the box with sensible defaults. No configuration is required.
+
 ```typescript
 export default defineNuxtConfig({
   modules: ['nuxt-ssg'],
-  ssg: {
-    transform: true, // Enable auto-transformation (default: true)
-    include: ['**/*.ts', '**/*.vue'],
-    exclude: ['node_modules/**'],
-  },
 })
 ```
 
@@ -141,15 +138,17 @@ useBuildAsyncData(
 )
 ```
 
-## Disabling Transformation
+## Disabling Automatic Wrapping
 
-If you prefer manual control:
+If you prefer manual control, you can disable the automatic wrapping as an escape hatch:
 
 ```typescript
 export default defineNuxtConfig({
   modules: ['nuxt-ssg'],
   ssg: {
-    transform: false,
+    debug: {
+      disableWrapping: true,
+    },
   },
 })
 ```

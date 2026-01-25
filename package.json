@@ -18,9 +18,11 @@
     "prepack": "nuxt-module-build build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground && pnpm prepare:fixtures",
+    "prepare:fixtures": "cd test/fixtures/ssg && nuxi prepare && cd ../ssr && nuxi prepare && cd ../csr && nuxi prepare && cd ../hybrid && nuxi prepare",
     "test": "vitest run",
-    "test:types": "vue-tsc --noEmit",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit && cd .. && pnpm test:types:e2e",
+    "test:types:e2e": "cd test/fixtures/ssg && vue-tsc --noEmit && cd ../ssr && vue-tsc --noEmit && cd ../csr && vue-tsc --noEmit && cd ../hybrid && vue-tsc --noEmit",
     "test:watch": "vitest watch"
   },
   "dependencies": {
@@ -34,6 +36,7 @@
     "@nuxt/module-builder": "^1.0.2",
     "@nuxt/schema": "^4.3.0",
     "@nuxt/test-utils": "^3.23.0",
+    "@types/estree": "^1.0.8",
     "@types/node": "latest",
     "@vue/test-utils": "^2.4.0",
     "happy-dom": "^17.0.0",
@@ -41,6 +44,7 @@
     "playwright": "^1.58.0",
     "playwright-core": "^1.58.0",
     "typescript": "~5.9.3",
+    "vite": "^7.3.1",
     "vitest": "^3.2.0",
     "vue": "^3.5.13",
     "vue-tsc": "^3.2.2"
