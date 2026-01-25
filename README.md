@@ -82,6 +82,18 @@ export default defineNuxtConfig({
 })
 ```
 
+## Limitations
+
+- **Key is required**: Unlike `useAsyncData`, `useBuildAsyncData` requires an explicit key as the first argument. The auto-generated key pattern is not supported.
+
+  ```typescript
+  // ❌ Not supported
+  useBuildAsyncData(async () => { ... })
+
+  // ✅ Must provide a key
+  useBuildAsyncData('my-key', async () => { ... })
+  ```
+
 ## Why Dynamic Imports?
 
 Static imports at the top of the file are resolved before any conditionals. Use dynamic `import()` inside the handler to ensure server code is only loaded during prerender.
@@ -134,7 +146,7 @@ import { neverReachable } from 'nuxt-ssg'
 
 useBuildAsyncData(
   'key',
-  import.meta.prerender ? handler : neverReachable,
+  import.meta.prerender ? handler : neverReachable(),
 )
 ```
 
@@ -163,7 +175,7 @@ useBuildAsyncData(
         const { Server } = await import('~/server/data')
         return Server.getData()
       }
-    : neverReachable,
+    : neverReachable(),
 )
 ```
 
