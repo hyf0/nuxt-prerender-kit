@@ -1,0 +1,51 @@
+{
+  "name": "nuxt-ssg",
+  "version": "0.1.0",
+  "description": "Nuxt module for SSG-optimized data fetching with automatic tree-shaking",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "test": "vitest run",
+    "test:types": "vue-tsc --noEmit",
+    "test:watch": "vitest watch"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.26.0",
+    "@nuxt/kit": "^4.3.0",
+    "@rollup/pluginutils": "^5.1.4",
+    "estree-walker": "^3.0.3",
+    "magic-string": "^0.30.17"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.3.0",
+    "@nuxt/test-utils": "^3.23.0",
+    "@types/node": "latest",
+    "@vue/test-utils": "^2.4.0",
+    "happy-dom": "^17.0.0",
+    "nuxt": "^4.3.0",
+    "playwright": "^1.58.0",
+    "playwright-core": "^1.58.0",
+    "typescript": "~5.9.3",
+    "vitest": "^3.2.0",
+    "vue": "^3.5.13",
+    "vue-tsc": "^3.2.2"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0"
+  }
+}
