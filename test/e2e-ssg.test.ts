@@ -30,6 +30,12 @@ describe('nuxt-ssg prerender (success)', async () => {
     expect(html).toContain('data-testid="message"')
   })
 
+  it('prerenders data correctly when using manual import', async () => {
+    const html = await $fetch('/manual-import')
+    expect(html).toContain('Hello from server')
+    expect(html).toContain('data-testid="message"')
+  })
+
   it('tree-shakes server code from client bundle', async () => {
     const nuxtDir = join(fixtureDir, '.output/public/_nuxt')
 

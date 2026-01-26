@@ -20,11 +20,19 @@ export default defineNuxtConfig({
 
 ## Usage
 
+`useBuildAsyncData` is auto-imported globally by Nuxt, so you can use it directly:
+
 ```typescript
 const data = await useBuildAsyncData('my-key', async () => {
   const { Server } = await import('~/server/data')
   return Server.getData()
 })
+```
+
+You can also import it manually if preferred:
+
+```typescript
+import { useBuildAsyncData } from 'nuxt-ssg/runtime'
 ```
 
 ## How It Works
