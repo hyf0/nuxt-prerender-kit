@@ -1,0 +1,6 @@
+packages:
+  - docs
+  - playground
+
+onlyBuiltDependencies:
+  - better-sqlite3

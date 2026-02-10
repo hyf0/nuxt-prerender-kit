@@ -1,6 +1,6 @@
 {
   "name": "nuxt-prerender-kit",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Nuxt module for prerender-optimized data fetching with automatic tree-shaking",
   "license": "MIT",
   "type": "module",
@@ -27,7 +27,10 @@
     "test": "vitest run",
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit && cd .. && pnpm test:types:e2e",
     "test:types:e2e": "cd test/fixtures/ssg && vue-tsc --noEmit && cd ../ssr && vue-tsc --noEmit && cd ../csr && vue-tsc --noEmit && cd ../hybrid && vue-tsc --noEmit",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "docs": "nuxi dev docs --extends docus",
+    "docs:build": "nuxi generate docs --extends docus",
+    "docs:preview": "nuxi preview docs"
   },
   "dependencies": {
     "@babel/parser": "^7.26.0",

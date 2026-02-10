@@ -9,14 +9,10 @@ const ERROR_MESSAGE =
  * `usePrerenderData` handlers are only executed during prerender (SSG)
  * and tree-shaken from client bundles.
  *
- * - **Dev**: Throws immediately for a clear, fast error during development.
- * - **Prod**: Returns an async function that throws when called by `useAsyncData`,
- *   allowing the error to flow through Nuxt's standard error handling pipeline.
+ * Returns an async function that throws when called by `useAsyncData`,
+ * allowing the error to flow through Nuxt's standard error handling pipeline.
  */
 export function neverReachable(): (() => Promise<never>) {
-  if (import.meta.dev) {
-    throw new Error(ERROR_MESSAGE)
-  }
   return async () => {
     throw new Error(ERROR_MESSAGE)
   }

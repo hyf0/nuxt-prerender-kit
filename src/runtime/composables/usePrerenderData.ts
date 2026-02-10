@@ -1,5 +1,5 @@
 import type { AsyncDataOptions, NuxtApp } from '#app'
-import { useAsyncData } from '#app'
+import { createError, useAsyncData } from '#app'
 
 /**
  * Handler function type for usePrerenderData.
@@ -49,16 +49,19 @@ export async function usePrerenderData<T, TransformResult = T>(
   const ret = await useAsyncData(key, handler, options)
 
   if (ret.error.value) {
-    throw new Error(
-      `[nuxt-prerender-kit] Failed to fetch data for key "${key}": ${ret.error.value.message}`,
-    )
+    throw createError({
+      statusCode: 500,
+      statusMessage: `[nuxt-prerender-kit] Failed to fetch data for key "${key}": ${ret.error.value.message}`,
+      fatal: true,
+    })
   }
 
   if (ret.data.value === null || ret.data.value === undefined) {
-    throw new Error(
-      `[nuxt-prerender-kit] Data for key "${key}" was null or undefined. ` +
-        'Ensure your handler returns a value.',
-    )
+    throw createError({
+      statusCode: 500,
+      statusMessage: `[nuxt-prerender-kit] Data for key "${key}" was null or undefined. Ensure your handler returns a value.`,
+      fatal: true,
+    })
   }
 
   return ret.data.value as TransformResult

@@ -5,10 +5,22 @@ describe('nuxt-prerender-kit SSR (failure)', async () => {
   await setup({ rootDir: './test/fixtures/ssr' })
 
   it('throws error when called in .vue file outside prerender context', async () => {
-    await expect($fetch('/')).rejects.toThrow(/500/)
+    try {
+      await $fetch('/')
+      expect.unreachable('should have thrown')
+    } catch (e: any) {
+      expect(e.statusCode).toBe(500)
+      expect(e.statusMessage).toContain('nuxt-prerender-kit')
+    }
   })
 
   it('throws error when called from composable .ts file outside prerender context', async () => {
-    await expect($fetch('/composable')).rejects.toThrow(/500/)
+    try {
+      await $fetch('/composable')
+      expect.unreachable('should have thrown')
+    } catch (e: any) {
+      expect(e.statusCode).toBe(500)
+      expect(e.statusMessage).toContain('nuxt-prerender-kit')
+    }
   })
 })
