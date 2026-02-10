@@ -1,6 +1,6 @@
 # nuxt-prerender-kit
 
-Nuxt module for SSG-optimized data fetching with automatic tree-shaking.
+Nuxt module for prerender-optimized data fetching with automatic tree-shaking.
 
 ## Installation
 
@@ -152,7 +152,7 @@ If you prefer manual control, you can disable the automatic wrapping as an escap
 ```typescript
 export default defineNuxtConfig({
   modules: ['nuxt-prerender-kit'],
-  ssg: {
+  prerenderKit: {
     debug: {
       disableWrapping: true,
     },

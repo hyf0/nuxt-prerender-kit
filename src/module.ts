@@ -15,7 +15,7 @@ export interface ModuleOptions {
 export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'nuxt-prerender-kit',
-    configKey: 'ssg',
+    configKey: 'prerenderKit',
     compatibility: {
       nuxt: '^4.0.0',
     },
