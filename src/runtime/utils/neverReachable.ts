@@ -1,17 +1,25 @@
+const ERROR_MESSAGE =
+  '[nuxt-prerender-kit] This function should never be called. ' +
+  'It indicates that usePrerenderData was invoked outside of prerender context. ' +
+  'This module is designed for SSG (Static Site Generation) only. ' +
+  'If you need data fetching for SSR pages, use useAsyncData instead.'
+
 /**
- * A placeholder function that throws an error if called.
- * Used with the Vite transform plugin to ensure `usePrerenderData` handlers
- * are only executed during prerender (SSG) and tree-shaken from client bundles.
+ * A placeholder function used by the Vite transform plugin to ensure
+ * `usePrerenderData` handlers are only executed during prerender (SSG)
+ * and tree-shaken from client bundles.
  *
- * @throws Error if called outside of prerender context
+ * - **Dev**: Throws immediately for a clear, fast error during development.
+ * - **Prod**: Returns an async function that throws when called by `useAsyncData`,
+ *   allowing the error to flow through Nuxt's standard error handling pipeline.
  */
-export function neverReachable(): never {
-  throw new Error(
-    '[nuxt-prerender-kit] This function should never be called. ' +
-      'It indicates that usePrerenderData was invoked outside of prerender context. ' +
-      'This module is designed for SSG (Static Site Generation) only. ' +
-      'If you need data fetching for SSR pages, use useAsyncData instead.',
-  )
+export function neverReachable(): (() => Promise<never>) {
+  if (import.meta.dev) {
+    throw new Error(ERROR_MESSAGE)
+  }
+  return async () => {
+    throw new Error(ERROR_MESSAGE)
+  }
 }
 
 /**
