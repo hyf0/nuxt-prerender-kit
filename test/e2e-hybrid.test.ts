@@ -5,7 +5,7 @@ import { execSync } from 'node:child_process'
 
 const fixtureDir = resolve('./test/fixtures/hybrid')
 
-describe('nuxt-ssg hybrid SSG/SSR', async () => {
+describe('nuxt-prerender-kit hybrid SSG/SSR', async () => {
   // Build the app before tests to generate prerendered pages
   beforeAll(() => {
     execSync('npx nuxt build', {

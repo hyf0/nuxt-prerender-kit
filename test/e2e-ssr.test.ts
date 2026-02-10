@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { $fetch, setup } from '@nuxt/test-utils/e2e'
 
-describe('nuxt-ssg SSR (failure)', async () => {
+describe('nuxt-prerender-kit SSR (failure)', async () => {
   await setup({ rootDir: './test/fixtures/ssr' })
 
   it('throws error when called in .vue file outside prerender context', async () => {

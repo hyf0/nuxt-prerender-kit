@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-ssg",
+  "name": "nuxt-prerender-kit",
   "version": "0.1.0",
   "description": "Nuxt module for SSG-optimized data fetching with automatic tree-shaking",
   "license": "MIT",

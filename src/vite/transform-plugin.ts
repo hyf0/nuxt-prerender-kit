@@ -6,11 +6,11 @@ import { walk } from 'estree-walker'
 import MagicString from 'magic-string'
 
 const IMPORT_STATEMENT =
-  "import { __neverReachable as __neverReachable_ssg } from '#nuxt-ssg/runtime';\n"
+  "import { __neverReachable as __neverReachable_prerender } from '#nuxt-prerender-kit/runtime';\n"
 
 /**
- * Vite plugin that transforms useBuildAsyncData calls to wrap the handler
- * with `import.meta.prerender ? handler : __neverReachable_ssg`.
+ * Vite plugin that transforms usePrerenderData calls to wrap the handler
+ * with `import.meta.prerender ? handler : __neverReachable_prerender`.
  *
  * This enables:
  * 1. Handler execution only during prerender (SSG)
@@ -21,7 +21,7 @@ export function ssgTransformPlugin(): Plugin {
   const filter = createFilter(['**/*.ts', '**/*.vue', '**/*.tsx', '**/*.jsx'], ['node_modules/**'])
 
   return {
-    name: 'nuxt-ssg-transform',
+    name: 'nuxt-prerender-kit-transform',
     enforce: 'pre',
 
     transform(code, id) {
@@ -30,8 +30,8 @@ export function ssgTransformPlugin(): Plugin {
         return null
       }
 
-      // Quick check: skip if no useBuildAsyncData in the code
-      if (!code.includes('useBuildAsyncData')) {
+      // Quick check: skip if no usePrerenderData in the code
+      if (!code.includes('usePrerenderData')) {
         return null
       }
 
@@ -92,8 +92,8 @@ function performTransformation(
         return
       }
 
-      // Check if this is a useBuildAsyncData call
-      if (!isUseBuildAsyncDataCall(node)) {
+      // Check if this is a usePrerenderData call
+      if (!isUsePrerenderDataCall(node)) {
         return
       }
 
@@ -114,8 +114,8 @@ function performTransformation(
 
       const handlerSource = code.slice(handlerStart, handlerEnd)
 
-      // Wrap the handler: import.meta.prerender ? handler : __neverReachable_ssg
-      const wrappedHandler = `import.meta.prerender ? ${handlerSource} : __neverReachable_ssg()`
+      // Wrap the handler: import.meta.prerender ? handler : __neverReachable_prerender
+      const wrappedHandler = `import.meta.prerender ? ${handlerSource} : __neverReachable_prerender()`
 
       s.overwrite(handlerStart, handlerEnd, wrappedHandler)
       needsImport = true
@@ -130,7 +130,7 @@ function performTransformation(
   // Add the import statement at the beginning
   if (needsImport) {
     // Check if the import already exists
-    if (!code.includes("from '#nuxt-ssg/runtime'")) {
+    if (!code.includes("from '#nuxt-prerender-kit/runtime'")) {
       s.prepend(IMPORT_STATEMENT)
     }
   }
@@ -145,12 +145,12 @@ function isCallExpression(node: Node): node is CallExpression {
   return node.type === 'CallExpression'
 }
 
-function isUseBuildAsyncDataCall(node: CallExpression): boolean {
+function isUsePrerenderDataCall(node: CallExpression): boolean {
   const callee = node.callee
 
-  // Direct call: useBuildAsyncData(...)
+  // Direct call: usePrerenderData(...)
   if (callee.type === 'Identifier') {
-    return (callee as Identifier).name === 'useBuildAsyncData'
+    return (callee as Identifier).name === 'usePrerenderData'
   }
 
   return false

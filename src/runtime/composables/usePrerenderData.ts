@@ -2,7 +2,7 @@ import type { AsyncDataOptions, NuxtApp } from '#app'
 import { useAsyncData } from '#app'
 
 /**
- * Handler function type for useBuildAsyncData.
+ * Handler function type for usePrerenderData.
  * Matches the signature expected by useAsyncData.
  */
 export type AsyncDataHandler<T> = (ctx: NuxtApp) => Promise<T>
@@ -10,7 +10,7 @@ export type AsyncDataHandler<T> = (ctx: NuxtApp) => Promise<T>
 /**
  * A wrapper around useAsyncData optimized for static site generation (SSG).
  *
- * This composable is designed to be used with the nuxt-ssg transform plugin,
+ * This composable is designed to be used with the nuxt-prerender-kit transform plugin,
  * which automatically wraps the handler to ensure it only runs during prerender
  * and is tree-shaken from client bundles.
  *
@@ -22,7 +22,7 @@ export type AsyncDataHandler<T> = (ctx: NuxtApp) => Promise<T>
  *
  * @example
  * ```typescript
- * const data = await useBuildAsyncData('my-key', async () => {
+ * const data = await usePrerenderData('my-key', async () => {
  *   const { Server } = await import('~/server/data')
  *   return Server.getData()
  * })
@@ -31,7 +31,7 @@ export type AsyncDataHandler<T> = (ctx: NuxtApp) => Promise<T>
  * @example
  * ```typescript
  * // With transform option
- * const items = await useBuildAsyncData(
+ * const items = await usePrerenderData(
  *   'items-key',
  *   async () => {
  *     const { Server } = await import('~/server/data')
@@ -41,7 +41,7 @@ export type AsyncDataHandler<T> = (ctx: NuxtApp) => Promise<T>
  * )
  * ```
  */
-export async function useBuildAsyncData<T, TransformResult = T>(
+export async function usePrerenderData<T, TransformResult = T>(
   key: string,
   handler: AsyncDataHandler<T>,
   options?: AsyncDataOptions<T, TransformResult>,
@@ -50,13 +50,13 @@ export async function useBuildAsyncData<T, TransformResult = T>(
 
   if (ret.error.value) {
     throw new Error(
-      `[nuxt-ssg] Failed to fetch data for key "${key}": ${ret.error.value.message}`,
+      `[nuxt-prerender-kit] Failed to fetch data for key "${key}": ${ret.error.value.message}`,
     )
   }
 
   if (ret.data.value === null || ret.data.value === undefined) {
     throw new Error(
-      `[nuxt-ssg] Data for key "${key}" was null or undefined. ` +
+      `[nuxt-prerender-kit] Data for key "${key}" was null or undefined. ` +
         'Ensure your handler returns a value.',
     )
   }

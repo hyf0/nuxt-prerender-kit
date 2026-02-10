@@ -1,2 +1,2 @@
-export { useBuildAsyncData } from './composables/useBuildAsyncData'
-export type { AsyncDataHandler } from './composables/useBuildAsyncData'
+export { usePrerenderData } from './composables/usePrerenderData'
+export type { AsyncDataHandler } from './composables/usePrerenderData'

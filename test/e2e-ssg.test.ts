@@ -6,7 +6,7 @@ import { execSync } from 'node:child_process'
 
 const fixtureDir = resolve('./test/fixtures/ssg')
 
-describe('nuxt-ssg prerender (success)', async () => {
+describe('nuxt-prerender-kit prerender (success)', async () => {
   // Run nuxt generate before tests to produce static output
   beforeAll(() => {
     execSync('npx nuxt generate', {

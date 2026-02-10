@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useBuildAsyncData } from 'nuxt-ssg/runtime'
+import { usePrerenderData } from 'nuxt-prerender-kit/runtime'
 
-const data = await useBuildAsyncData('test-data-manual', async () => {
+const data = await usePrerenderData('test-data-manual', async () => {
   const { getData } = await import('~~/server/data')
   return getData()
 })

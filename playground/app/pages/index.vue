@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const data = await useBuildAsyncData('home-data', async () => {
+const data = await usePrerenderData('home-data', async () => {
   const { getData } = await import('~~/server/data')
   return getData()
 })
@@ -7,7 +7,7 @@ const data = await useBuildAsyncData('home-data', async () => {
 
 <template>
   <div>
-    <h1>nuxt-ssg Playground</h1>
+    <h1>nuxt-prerender-kit Playground</h1>
     <p>Message: {{ data.message }}</p>
     <p>Timestamp: {{ data.timestamp }}</p>
   </div>

@@ -14,7 +14,7 @@ export interface ModuleOptions {
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'nuxt-ssg',
+    name: 'nuxt-prerender-kit',
     configKey: 'ssg',
     compatibility: {
       nuxt: '^4.0.0',
@@ -27,8 +27,8 @@ export default defineNuxtModule<ModuleOptions>({
     // Add runtime composables
     addImports([
       {
-        name: 'useBuildAsyncData',
-        from: resolver.resolve('./runtime/composables/useBuildAsyncData'),
+        name: 'usePrerenderData',
+        from: resolver.resolve('./runtime/composables/usePrerenderData'),
       },
       {
         name: 'neverReachable',
@@ -37,7 +37,7 @@ export default defineNuxtModule<ModuleOptions>({
     ])
 
     // Add the internal neverReachable function used by the transform plugin
-    nuxt.options.alias['#nuxt-ssg/runtime'] = resolver.resolve(
+    nuxt.options.alias['#nuxt-prerender-kit/runtime'] = resolver.resolve(
       './runtime/utils/neverReachable',
     )
 

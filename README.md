@@ -1,29 +1,29 @@
-# nuxt-ssg
+# nuxt-prerender-kit
 
 Nuxt module for SSG-optimized data fetching with automatic tree-shaking.
 
 ## Installation
 
 ```bash
-npm install nuxt-ssg
+npm install nuxt-prerender-kit
 # or
-pnpm add nuxt-ssg
+pnpm add nuxt-prerender-kit
 ```
 
 Add to your `nuxt.config.ts`:
 
 ```typescript
 export default defineNuxtConfig({
-  modules: ['nuxt-ssg'],
+  modules: ['nuxt-prerender-kit'],
 })
 ```
 
 ## Usage
 
-`useBuildAsyncData` is auto-imported globally by Nuxt, so you can use it directly:
+`usePrerenderData` is auto-imported globally by Nuxt, so you can use it directly:
 
 ```typescript
-const data = await useBuildAsyncData('my-key', async () => {
+const data = await usePrerenderData('my-key', async () => {
   const { Server } = await import('~/server/data')
   return Server.getData()
 })
@@ -32,34 +32,34 @@ const data = await useBuildAsyncData('my-key', async () => {
 You can also import it manually if preferred:
 
 ```typescript
-import { useBuildAsyncData } from 'nuxt-ssg/runtime'
+import { usePrerenderData } from 'nuxt-prerender-kit/runtime'
 ```
 
 ## How It Works
 
-**`nuxt-ssg` is designed for static site generation (SSG).** It ensures data fetching only happens during prerender and prevents accidental usage in wrong render contexts.
+**`nuxt-prerender-kit` is designed for static site generation (SSG).** It ensures data fetching only happens during prerender and prevents accidental usage in wrong render contexts.
 
-1. **Build-time transformation**: A Vite plugin detects `useBuildAsyncData` calls and wraps the handler:
+1. **Build-time transformation**: A Vite plugin detects `usePrerenderData` calls and wraps the handler:
    ```typescript
    // Before
-   useBuildAsyncData('key', handler)
+   usePrerenderData('key', handler)
 
    // After
-   useBuildAsyncData('key', import.meta.prerender ? handler : __neverReachable_ssg())
+   usePrerenderData('key', import.meta.prerender ? handler : __neverReachable_prerender())
    ```
 
 2. **Prerender (SSG) context**: During build-time prerendering, `import.meta.prerender` is `true` → handler executes and fetches data
 
 3. **Client bundle**: `import.meta.prerender` is **statically replaced** with `false` at compile time. This enables Dead Code Elimination (DCE) — the handler branch is completely removed from the client bundle. With dynamic imports inside the handler, all server code is tree-shaken.
 
-4. **SSR context (wrong usage)**: In the server bundle, `import.meta.prerender` is a **runtime value** set by Nitro. It's `true` during prerender but `false` during SSR requests. If someone accidentally uses `useBuildAsyncData` on an SSR page, `__neverReachable_ssg()` throws an error indicating the module is for SSG only.
+4. **SSR context (wrong usage)**: In the server bundle, `import.meta.prerender` is a **runtime value** set by Nitro. It's `true` during prerender but `false` during SSR requests. If someone accidentally uses `usePrerenderData` on an SSR page, `__neverReachable_prerender()` throws an error indicating the module is for SSG only.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Transformed Code                                           │
-│  useBuildAsyncData('key', import.meta.prerender             │
+│  usePrerenderData('key', import.meta.prerender              │
 │    ? handler                                                │
-│    : __neverReachable_ssg())                                │
+│    : __neverReachable_prerender())                          │
 └─────────────────────────────────────────────────────────────┘
                               │
           ┌───────────────────┼───────────────────┐
@@ -86,20 +86,20 @@ The module works out of the box with sensible defaults. No configuration is requ
 
 ```typescript
 export default defineNuxtConfig({
-  modules: ['nuxt-ssg'],
+  modules: ['nuxt-prerender-kit'],
 })
 ```
 
 ## Limitations
 
-- **Key is required**: Unlike `useAsyncData`, `useBuildAsyncData` requires an explicit key as the first argument. The auto-generated key pattern is not supported.
+- **Key is required**: Unlike `useAsyncData`, `usePrerenderData` requires an explicit key as the first argument. The auto-generated key pattern is not supported.
 
   ```typescript
   // ❌ Not supported
-  useBuildAsyncData(async () => { ... })
+  usePrerenderData(async () => { ... })
 
   // ✅ Must provide a key
-  useBuildAsyncData('my-key', async () => { ... })
+  usePrerenderData('my-key', async () => { ... })
   ```
 
 ## Why Dynamic Imports?
@@ -110,12 +110,12 @@ Static imports at the top of the file are resolved before any conditionals. Use 
 // ❌ Static import - bundled regardless of conditional
 import { Server } from '~/server/data'
 
-useBuildAsyncData('key', async () => {
+usePrerenderData('key', async () => {
   return Server.getData() // Server already bundled!
 })
 
 // ✅ Dynamic import - tree-shaken from client
-useBuildAsyncData('key', async () => {
+usePrerenderData('key', async () => {
   const { Server } = await import('~/server/data')
   return Server.getData()
 })
@@ -123,7 +123,7 @@ useBuildAsyncData('key', async () => {
 
 ## API
 
-### `useBuildAsyncData(key, handler, options?)`
+### `usePrerenderData(key, handler, options?)`
 
 A wrapper around `useAsyncData` optimized for SSG.
 
@@ -135,7 +135,7 @@ Returns the resolved data directly (not wrapped in `AsyncData`).
 
 ```typescript
 // With transform option
-const items = await useBuildAsyncData(
+const items = await usePrerenderData(
   'items-key',
   async () => {
     const { Server } = await import('~/server/data')
@@ -151,7 +151,7 @@ If you prefer manual control, you can disable the automatic wrapping as an escap
 
 ```typescript
 export default defineNuxtConfig({
-  modules: ['nuxt-ssg'],
+  modules: ['nuxt-prerender-kit'],
   ssg: {
     debug: {
       disableWrapping: true,
@@ -163,7 +163,7 @@ export default defineNuxtConfig({
 Then wrap handlers manually:
 
 ```typescript
-useBuildAsyncData(
+usePrerenderData(
   'key',
   import.meta.prerender
     ? async () => {
