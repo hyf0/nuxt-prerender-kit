@@ -19,12 +19,21 @@ const IMPORT_STATEMENT =
  */
 export function ssgTransformPlugin(): Plugin {
   const filter = createFilter(['**/*.ts', '**/*.vue', '**/*.tsx', '**/*.jsx'], ['node_modules/**'])
+  let isDev = false
 
   return {
     name: 'nuxt-prerender-kit-transform',
     enforce: 'pre',
 
+    configResolved(config) {
+      isDev = config.command === 'serve'
+    },
+
     transform(code, id) {
+      // In dev mode, skip transformation so handlers run directly via SSR
+      if (isDev) {
+        return null
+      }
       // Skip files that don't match the filter
       if (!filter(id)) {
         return null
