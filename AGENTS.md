@@ -17,6 +17,10 @@ npx vitest run test/transform.test.ts   # Run a single test file
 pnpm test:types           # Type-check everything (playground + test fixtures)
 pnpm prepack              # Build the module for publishing
 pnpm run docs             # Run docs dev server
+
+# Verification — run before submitting changes
+pnpm test                 # Run unit + e2e tests
+pnpm test:types           # Type-check src, playground, and all test fixtures
 ```
 
 ## Architecture
