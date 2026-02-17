@@ -6,6 +6,7 @@
     "url": "https://github.com/hyf0/nuxt-prerender-kit"
   },
   "license": "MIT",
+  "packageManager": "pnpm@10.29.2",
   "type": "module",
   "exports": {
     ".": {
