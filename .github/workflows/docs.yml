@@ -37,6 +37,8 @@ jobs:
 
       - run: pnpm install
 
+      - run: pnpm dev:prepare
+
       - run: pnpm -C docs generate
 
       - uses: actions/configure-pages@v5
