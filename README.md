@@ -50,6 +50,12 @@ const data = await usePrerenderData('my-key', async () => {
 })
 ```
 
+## Gotchas
+
+- **`nuxt dev` won't catch misuse.** The Vite transform is skipped in dev mode, so `usePrerenderData` behaves like a normal `useAsyncData` call. You won't see errors until you build.
+- **`nuxt generate` (full SSG) is 100% safe.** Every route is prerendered, so handlers always run at build time and get tree-shaken from client bundles.
+- **Hybrid rendering needs care.** If you use `routeRules` to mix prerendered and server-rendered routes, any SSR/CSR route that hits a `usePrerenderData` call will throw a fatal error at runtime — the handler is guarded behind `import.meta.prerender` which is `false` outside of prerendering. Make sure `usePrerenderData` is only used in routes that are actually prerendered.
+
 ## Documentation
 
 See the [full documentation](https://hyf0.github.io/nuxt-prerender-kit/) for detailed usage, API reference, and best practices.
