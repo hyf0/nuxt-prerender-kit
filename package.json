@@ -1,6 +1,6 @@
 {
   "name": "nuxt-prerender-kit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Nuxt module for prerender-optimized data fetching with automatic tree-shaking",
   "repository": {
     "url": "https://github.com/hyf0/nuxt-prerender-kit"
@@ -20,7 +20,8 @@
   },
   "main": "./dist/module.mjs",
   "files": [
-    "dist"
+    "dist",
+    "skills"
   ],
   "scripts": {
     "prepack": "nuxt-module-build build",

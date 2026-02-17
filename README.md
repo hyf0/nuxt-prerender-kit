@@ -1,29 +1,6 @@
 # nuxt-prerender-kit
 
-Nuxt module that tree-shakes server-only code from client bundles in statically generated sites.
-
-## The Problem
-
-In Nuxt SSG, data-fetching handlers passed to `useAsyncData` get bundled into the client even though they only run at build time. This pulls server-only code (database clients, API secrets, heavy libraries) into what users download.
-
-## The Solution
-
-A Vite plugin wraps `usePrerenderData` handlers with an `import.meta.prerender` guard. Since bundlers statically replace this flag, Dead Code Elimination removes the handler — and everything it imports — from the client bundle.
-
-```
-  usePrerenderData('key', import.meta.prerender ? handler : neverReachable())
-                                    |
-            ┌───────────────────────┼───────────────────┐
-            |                       |                   |
-      ┌─────┴─────┐          ┌─────┴─────┐       ┌─────┴─────┐
-      │ Prerender │          │ SSR/CSR   │       │  Client   │
-      │  (Build)  │          │ (Runtime) │       │  Bundle   │
-      └─────┬─────┘          └─────┬─────┘       └─────┬─────┘
-            │                      │                    │
-       prerender                prerender            prerender
-       = true                   = false              = false
-       → handler runs           → throws error       → DCE removes
-```
+Nuxt module for prerender-optimized data fetching — an enhanced `useAsyncData` with automatic tree-shaking.
 
 ## Installation
 
@@ -39,7 +16,21 @@ export default defineNuxtConfig({
 })
 ```
 
+### Skill
+
+The module ships with an agent skill that teaches AI coding assistants best practices for `usePrerenderData`.
+
+**Via [skills-npm](https://github.com/antfu/skills-npm) (recommended)** — Auto-discovered when `nuxt-prerender-kit` is installed as an npm dependency. The skill stays in sync with the module version.
+
+**Via [skills-cli](https://github.com/antfu/skills-cli)** — As a fallback:
+
+```bash
+npx skills add hyf0/nuxt-prerender-kit
+```
+
 ## Quick Start
+
+`usePrerenderData` is an enhanced [`useAsyncData`](https://nuxt.com/docs/api/composables/use-async-data) for static sites. Same API, same options — but it returns the resolved value directly (no `.value`), tree-shakes the handler from client bundles, and treats errors as fatal build errors instead of silent refs.
 
 `usePrerenderData` is auto-imported. Use dynamic imports inside the handler so server code is fully tree-shaken:
 
@@ -77,6 +68,29 @@ console.log(data.title) // plain value, no .value needed
 ## Documentation
 
 See the [full documentation](https://hyf0.github.io/nuxt-prerender-kit/) for detailed usage, API reference, and best practices.
+
+## The Problem
+
+In Nuxt SSG, data-fetching handlers passed to `useAsyncData` get bundled into the client even though they only run at build time. This pulls server-only code (database clients, API secrets, heavy libraries) into what users download.
+
+## The Solution
+
+A Vite plugin wraps `usePrerenderData` handlers with an `import.meta.prerender` guard. Since bundlers statically replace this flag, Dead Code Elimination removes the handler — and everything it imports — from the client bundle.
+
+```
+  usePrerenderData('key', import.meta.prerender ? handler : neverReachable())
+                                    |
+            ┌───────────────────────┼───────────────────┐
+            |                       |                   |
+      ┌─────┴─────┐          ┌─────┴─────┐       ┌─────┴─────┐
+      │ Prerender │          │ SSR/CSR   │       │  Client   │
+      │  (Build)  │          │ (Runtime) │       │  Bundle   │
+      └─────┬─────┘          └─────┬─────┘       └─────┬─────┘
+            │                      │                    │
+       prerender                prerender            prerender
+       = true                   = false              = false
+       → handler runs           → throws error       → DCE removes
+```
 
 ## License
 

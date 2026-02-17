@@ -55,21 +55,10 @@ Features
   icon: i-lucide-scissors
   ---
   #title
-  Automatic dead code elimination
+  Automatic tree-shaking
 
   #description
-  A Vite plugin wraps handlers with `import.meta.prerender` conditionals, enabling DCE in the client bundle.
-  :::
-
-  :::u-page-feature
-  ---
-  icon: i-lucide-tree-pine
-  ---
-  #title
-  Server code tree-shaking
-
-  #description
-  Use dynamic imports inside handlers to ensure server-only code is completely removed from the client.
+  A Vite plugin wraps handlers with `import.meta.prerender` conditionals, enabling dead code elimination so server-only code is completely removed from the client bundle.
   :::
 
   :::u-page-feature
@@ -91,17 +80,17 @@ Features
   Zero configuration
 
   #description
-  Works out of the box with sensible defaults. No configuration is required.
+  Works out of the box with sensible defaults. `usePrerenderData` is auto-imported globally — just use it directly in any page or component.
   :::
 
   :::u-page-feature
   ---
-  icon: i-lucide-import
+  icon: i-lucide-bot
   ---
   #title
-  Auto-imported
+  AI friendly
 
   #description
-  `usePrerenderData` is auto-imported globally by Nuxt — just use it directly in any page or component.
+  Ships with an agent skill that teaches AI coding assistants best practices for `usePrerenderData`, preventing common mistakes automatically.
   :::
 ::
