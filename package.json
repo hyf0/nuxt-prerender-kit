@@ -1,6 +1,6 @@
 {
   "name": "nuxt-prerender-kit",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Nuxt module for prerender-optimized data fetching with automatic tree-shaking",
   "repository": {
     "url": "https://github.com/hyf0/nuxt-prerender-kit"
@@ -27,7 +27,7 @@
     "prepack": "nuxt-module-build build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "prepare": "pnpm prepare:module && pnpm prepare:playground && pnpm prepare:fixtures",
+    "dev:prepare": "pnpm prepare:module && pnpm prepare:playground && pnpm prepare:fixtures",
     "prepare:module": "nuxt-module-build build --stub && nuxt-module-build prepare",
     "prepare:playground": "nuxi prepare playground",
     "prepare:fixtures": "cd test/fixtures/ssg && nuxi prepare && cd ../ssr && nuxi prepare && cd ../csr && nuxi prepare && cd ../hybrid && nuxi prepare",

@@ -9,7 +9,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm install              # Install deps + auto-runs prepare (stubs module, prepares playground + fixtures)
+pnpm install              # Install deps
+pnpm dev:prepare          # Stub module + prepare playground & test fixtures (run after install)
 pnpm dev                  # Run playground (Nuxi dev server)
 pnpm test                 # Run all tests (vitest)
 pnpm test:watch           # Watch mode
