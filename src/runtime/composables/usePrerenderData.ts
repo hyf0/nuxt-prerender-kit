@@ -18,7 +18,7 @@ export type AsyncDataHandler<T> = (ctx: NuxtApp) => Promise<T>
  * @param handler - Async function that fetches data. Should use dynamic imports for server code.
  * @param options - Optional AsyncData options (transform, pick, watch, etc.)
  * @returns The resolved data value
- * @throws Error if data fetching fails or returns null/undefined
+ * @throws Error if data fetching fails
  *
  * @example
  * ```typescript
@@ -52,14 +52,6 @@ export async function usePrerenderData<T, TransformResult = T>(
     throw createError({
       statusCode: 500,
       statusMessage: `[nuxt-prerender-kit] Failed to fetch data for key "${key}": ${ret.error.value.message}`,
-      fatal: true,
-    })
-  }
-
-  if (ret.data.value === null || ret.data.value === undefined) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: `[nuxt-prerender-kit] Data for key "${key}" was null or undefined. Ensure your handler returns a value.`,
       fatal: true,
     })
   }

@@ -36,6 +36,12 @@ describe('nuxt-prerender-kit prerender (success)', async () => {
     expect(html).toContain('data-testid="message"')
   })
 
+  it('prerenders null data correctly', async () => {
+    const html = await $fetch('/null-data')
+    expect(html).toContain('null-value')
+    expect(html).toContain('data-testid="null-result"')
+  })
+
   it('tree-shakes server code from client bundle', async () => {
     const nuxtDir = join(fixtureDir, '.output/public/_nuxt')
 
