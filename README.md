@@ -44,10 +44,28 @@ export default defineNuxtConfig({
 `usePrerenderData` is auto-imported. Use dynamic imports inside the handler so server code is fully tree-shaken:
 
 ```typescript
+// usePrerenderData returns the resolved value directly — no .value, no .error
 const data = await usePrerenderData('my-key', async () => {
   const { db } = await import('~/server/database')
   return db.query('SELECT * FROM posts')
 })
+
+// Use it right away, it's already unwrapped
+console.log(data.title)
+```
+
+Compare with `useAsyncData`:
+
+```typescript
+// useAsyncData returns refs — you need .value everywhere
+const { data, error } = await useAsyncData('my-key', () => fetchPosts())
+console.log(data.value?.title)
+if (error.value) { /* handle error */ }
+
+// usePrerenderData — data is fetched at build time, errors throw immediately
+const data = await usePrerenderData('my-key', handler)
+console.log(data.title) // plain value, no .value needed
+// no error handling needed — failures are fatal build errors
 ```
 
 ## Gotchas
