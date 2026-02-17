@@ -52,7 +52,7 @@ const data = await usePrerenderData('my-key', async () => {
 
 ## Documentation
 
-See the [full documentation](https://github.com/pindapixels/nuxt-prerender-kit/blob/main/docs) for detailed usage, API reference, and best practices.
+See the [full documentation](https://hyf0.github.io/nuxt-prerender-kit/) for detailed usage, API reference, and best practices.
 
 ## License
 
